@@ -1,0 +1,10 @@
+# Ignore git related files
+.git
+.github
+.gitignore
+
+# Ignore documentation
+LICENSE
+*.md
+
+# Do NOT ignore entry.sh 

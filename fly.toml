@@ -1,0 +1,82 @@
+# fly.toml app configuration file generated for robprian on 2025-05-17T13:27:26+07:00
+#
+# See https://fly.io/docs/reference/configuration/ for information about how to use this file.
+#
+
+app = 'robfly'
+primary_region = 'sin'
+
+[build]
+  dockerfile = 'Dockerfile'
+
+[[mounts]]
+  source = 'robby_data'
+  destination = '/robby'
+  initial_size = '30gb'
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 1995
+
+  [[services.ports]]
+    port = 1995
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 80
+
+  [[services.ports]]
+    port = 80
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 443
+
+  [[services.ports]]
+    port = 443
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 3000
+
+  [[services.ports]]
+    port = 3000
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 5432
+
+  [[services.ports]]
+    port = 5432
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 6379
+
+  [[services.ports]]
+    port = 6379
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 9000
+
+  [[services.ports]]
+    port = 9000
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 9001
+
+  [[services.ports]]
+    port = 9001
+
+[[services]]
+  protocol = 'tcp'
+  internal_port = 8080
+
+  [[services.ports]]
+    port = 8080
+
+[[vm]]
+  size = 'shared-cpu-1x'
+  memory = '1gb'

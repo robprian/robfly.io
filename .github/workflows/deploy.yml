@@ -1,0 +1,49 @@
+name: Deploy Linux GUI to Fly.io
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Install Fly.io CLI manually
+        run: |
+          curl -L https://fly.io/install.sh | sh
+          echo "$HOME/.fly/bin" >> $GITHUB_PATH
+
+      - name: Deploy to Fly.io
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        run: |
+          fly apps list | grep robfly || fly apps create robfly --org personal
+          fly volumes create robby_data --region lax --size 30 --app robfly || true
+          fly deploy --remote-only
+      
+      - name: Tambah IPv4 Publik jika belum ada
+        run: |
+          echo "Cek IPv4 Fly.io..."
+          IPV4=$(fly ips list -a robfly | grep -m1 'v4' | awk '{print $1}')
+          if [ -z "$IPV4" ]; then
+            echo "Belum ada IPv4, alokasikan baru..."
+            fly ips allocate-v4 --app robfly --yes
+          else
+            echo "IPv4 sudah ada: $IPV4"
+          fi
+
+          echo "Cek IPv6 Fly.io..."
+          IPV6=$(fly ips list -a robfly | grep -m1 'v6' | awk '{print $1}')
+          if [ -z "$IPV6" ]; then
+            echo "Belum ada IPv6, alokasikan baru..."
+            fly ips allocate-v6 --app robfly
+          else
+            echo "IPv6 sudah ada: $IPV6"
+          fi
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
