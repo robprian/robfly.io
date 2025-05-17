@@ -1,8 +1,9 @@
 #!/bin/bash
 set -e
 
-# Init SSH password to P4ks1m1n
-echo "robby:KATASANDI" | chpasswd
+# Init SSH password from environment variable or use default
+SSH_PASSWORD=${SSH_PASSWORD:-"KATASANDIKAMU"}
+echo "robby:${SSH_PASSWORD}" | chpasswd
 
 # Set hostname to robprian
 echo "robprian" > /etc/hostname

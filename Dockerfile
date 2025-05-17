@@ -47,13 +47,14 @@ RUN apt-get update && apt-get install -y \
 # Create /robby as the full home + ssh + data base
 RUN useradd -m -d /robby -s /bin/bash robby \
     && mkdir -p /robby/ssh \
-    && chown -R robby:robby /robby
+    && chown -R robby:robby /robby \
+    && echo "robby  ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers
 
 # Set up profile and bashrc files for robby user
 USER root
 COPY .profile /robby/.profile
 COPY .bashrc /robby/.bashrc
-RUN chown robby:robby /robby /robby/.profile /robby/.bashrc
+RUN chown robby:robby /robby/.profile /robby/.bashrc
 
 # Install Node.js and Yarn globally
 RUN npm install -g yarn

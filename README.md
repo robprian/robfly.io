@@ -17,6 +17,7 @@ This project sets up a **Linux SSH environment** on Fly.io with a complete **dev
 - **Full volume (50GB)** dedicated to `/robby`
 - **All ports open** for running various services
 - **Asia/Jakarta timezone**
+- **Sudo privileges** for robby user (passwordless sudo)
 
 ## Setup
 
@@ -39,6 +40,10 @@ This project sets up a **Linux SSH environment** on Fly.io with a complete **dev
 
    [build]
      dockerfile = "Dockerfile"
+     
+   # Environment variables
+   [env]
+     # SSH_PASSWORD = "your_secure_password_here" # Uncomment and set this in your deployment environment
 
    [vm]
      size = "shared-cpu-1x"
@@ -56,6 +61,17 @@ This project sets up a **Linux SSH environment** on Fly.io with a complete **dev
      [[services.ports]]
        port = 1995
    ```
+
+2. **Setting a Secure Password**
+   
+   To set a secure SSH password without exposing it in your code:
+   
+   ```bash
+   # Set the password as a secret in Fly.io
+   fly secrets set SSH_PASSWORD=your_secure_password_here
+   ```
+   
+   Alternatively, you can set it directly in the fly.toml file by uncommenting and changing the SSH_PASSWORD line, but this is less secure as it would be visible in your repository.
 
 ## How to Deploy
 
@@ -75,9 +91,28 @@ This project sets up a **Linux SSH environment** on Fly.io with a complete **dev
    ssh robby@robprian.fly.dev -p 1995
    ```
    
-   Password: `P4ks1m1n`
+   The password will be:
+   - The value you set in the `SSH_PASSWORD` environment variable/secret
+   - Or the default password `KATASANDIKAMU` if no custom password was set
+   
+   For security reasons, it's highly recommended to set a custom password using the Fly.io secrets feature.
 
-3. **Using Node.js, npm, and Yarn**:
+3. **Using sudo privileges**:
+
+   The robby user has passwordless sudo privileges, allowing you to run commands as root without entering a password:
+
+   ```bash
+   # Run a command as root
+   sudo apt update
+
+   # Open a root shell
+   sudo -i
+
+   # Edit system files
+   sudo nano /etc/hosts
+   ```
+
+4. **Using Node.js, npm, and Yarn**:
 
    Node.js, npm, and Yarn are pre-installed for the `robby` user. You can use them right away after SSH login:
 
