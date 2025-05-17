@@ -1,8 +1,8 @@
 name: Deploy Linux GUI to Fly.io
 
 on:
-  push:
-    branches: [ main ]
+  #push:
+  #  branches: [ main ]
   workflow_dispatch:
 
 jobs:
